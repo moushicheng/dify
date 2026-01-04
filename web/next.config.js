@@ -5,13 +5,24 @@ import withPWAInit from 'next-pwa'
 
 const isDev = process.env.NODE_ENV === 'development'
 
+function normalizeBasePath(rawBasePath) {
+  if (!rawBasePath)
+    return ''
+  const trimmed = String(rawBasePath).trim()
+  if (!trimmed || trimmed === '/')
+    return ''
+  return `/${trimmed.replace(/^\/+/, '').replace(/\/+$/, '')}`
+}
+
+const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH)
+
 const withPWA = withPWAInit({
   dest: 'public',
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
   fallbacks: {
-    document: '/_offline.html',
+    document: `${basePath}/_offline.html`,
   },
   runtimeCaching: [
     {
@@ -96,7 +107,8 @@ const remoteImageURLs = [hasSetWebPrefix ? new URL(`${process.env.NEXT_PUBLIC_WE
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  basePath,
+  assetPrefix: process.env.NEXT_PUBLIC_WEB_PREFIX,
   transpilePackages: ['echarts', 'zrender'],
   turbopack: {
     rules: codeInspectorPlugin({
