@@ -40,6 +40,7 @@ const LocaleLayout = async ({
   const datasetMap: Record<DatasetAttr, string | undefined> = {
     [DatasetAttr.DATA_API_PREFIX]: process.env.NEXT_PUBLIC_API_PREFIX,
     [DatasetAttr.DATA_PUBLIC_API_PREFIX]: process.env.NEXT_PUBLIC_PUBLIC_API_PREFIX,
+    [DatasetAttr.DATA_PUBLIC_BUGLY_ENV_NAME]: process.env.BUGLY_ENV_NAME || process.env.NEXT_PUBLIC_BUGLY_ENV_NAME,
     [DatasetAttr.DATA_MARKETPLACE_API_PREFIX]: process.env.NEXT_PUBLIC_MARKETPLACE_API_PREFIX,
     [DatasetAttr.DATA_MARKETPLACE_URL_PREFIX]: process.env.NEXT_PUBLIC_MARKETPLACE_URL_PREFIX,
     [DatasetAttr.DATA_PUBLIC_EDITION]: process.env.NEXT_PUBLIC_EDITION,

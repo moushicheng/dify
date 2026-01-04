@@ -25,7 +25,7 @@ import type {
 } from '@/types/workflow'
 import Cookies from 'js-cookie'
 import Toast from '@/app/components/base/toast'
-import { API_PREFIX, CSRF_COOKIE_NAME, CSRF_HEADER_NAME, IS_CE_EDITION, PASSPORT_HEADER_NAME, PUBLIC_API_PREFIX, WEB_APP_SHARE_CODE_HEADER_NAME } from '@/config'
+import { API_PREFIX, CSRF_COOKIE_NAME, CSRF_HEADER_NAME, IS_CE_EDITION, IS_OA_BUGLY_ENV, PASSPORT_HEADER_NAME, PUBLIC_API_PREFIX, WEB_APP_SHARE_CODE_HEADER_NAME } from '@/config'
 import { asyncRunSafe } from '@/utils'
 import { basePath } from '@/utils/var'
 import { base, ContentType, getBaseOptions } from './fetch'
@@ -135,6 +135,8 @@ function unicodeToChar(text: string) {
 
 const WBB_APP_LOGIN_PATH = '/webapp-signin'
 function requiredWebSSOLogin(message?: string, code?: number) {
+  if (IS_OA_BUGLY_ENV)
+    return
   const params = new URLSearchParams()
   // prevent redirect loop
   if (globalThis.location.pathname === WBB_APP_LOGIN_PATH)
@@ -553,7 +555,7 @@ export const request = async<T>(url: string, options = {}, otherOptions?: IOther
       const [parseErr, errRespData] = await asyncRunSafe<ResponseError>(errResp.json())
       const loginUrl = `${globalThis.location.origin}${basePath}/signin`
       if (parseErr) {
-        globalThis.location.href = loginUrl
+        !IS_OA_BUGLY_ENV && (globalThis.location.href = loginUrl)
         return Promise.reject(err)
       }
       if (/\/login/.test(url))
@@ -600,14 +602,14 @@ export const request = async<T>(url: string, options = {}, otherOptions?: IOther
       if (refreshErr === null)
         return baseFetch<T>(url, options, otherOptionsForBaseFetch)
       if (location.pathname !== `${basePath}/signin` || !IS_CE_EDITION) {
-        jumpTo(loginUrl)
+        !IS_OA_BUGLY_ENV && jumpTo(loginUrl)
         return Promise.reject(err)
       }
       if (!silent) {
         Toast.notify({ type: 'error', message })
         return Promise.reject(err)
       }
-      jumpTo(loginUrl)
+      !IS_OA_BUGLY_ENV && jumpTo(loginUrl)
       return Promise.reject(err)
     }
     else {

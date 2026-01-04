@@ -63,6 +63,13 @@ export const PUBLIC_API_PREFIX = getStringConfig(
   DatasetAttr.DATA_PUBLIC_API_PREFIX,
   'http://localhost:5001/api',
 )
+
+export const BUGLY_ENV_NAME = getStringConfig(
+  process.env.NEXT_PUBLIC_BUGLY_ENV_NAME,
+  DatasetAttr.DATA_PUBLIC_BUGLY_ENV_NAME,
+  'prod',
+)
+export const IS_OA_BUGLY_ENV = BUGLY_ENV_NAME === 'oa'
 export const MARKETPLACE_API_PREFIX = getStringConfig(
   process.env.NEXT_PUBLIC_MARKETPLACE_API_PREFIX,
   DatasetAttr.DATA_MARKETPLACE_API_PREFIX,
